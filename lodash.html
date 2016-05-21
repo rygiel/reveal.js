@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js – The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Programowanie funkcyjne</h1>
+					<h3>Lodash</h3>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>Every</h3>
+					<pre><code>
+_.every([1, 2, 3, 4], function(n) {
+	return n % 2 === 0;
+});
+// -> false
+
+var fruits = [
+{
+	name: 'apple',
+	price: 1.99,
+	onSale: true
+},
+{
+	name: 'orange',
+	price: 0.99,
+	onSale: true
+}
+];
+_.every(fruits, 'onSale', true);
+// -> true
+
+var obj = {
+	a: 1,
+	b: 2,
+	c: 3
+};
+_.every(obj, function(n) {
+	return n % 2 === 0;
+});
+// -> false
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>some</h3>
+					<pre><code>
+_.some([1, 2, 3, 4], function(n) {
+	return n % 2 === 0;
+});
+// -> true
+
+_.some('hello', function(c) {
+	return c === 'h';
+});
+// -> true
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>Filter</h3>
+					<pre><code>
+_.filter(['a', 'b', 'c'], function(char) {
+	return char > 'b';
+});
+// -> ['c']
+
+var obj = {
+	a: 1,
+	b: 2,
+	c: 3
+};
+_.filter(obj, function(n) {
+	return n > 1;
+});
+// -> [2, 3]
+
+_.filter('hello', function(c) {
+	return c !== 'l';
+});
+// -> ['h', 'e', 'o']
+
+_.reject(['a', 'b', 'c'], function(char) {
+	return char > 'b';
+});
+// -> ['a', 'b']
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>Where</h3>
+					<pre><code>
+var users = [
+{
+	name: 'Alex',
+	email: 'alex@example.org'
+},
+{
+	name: 'Bob',
+	email: 'bob@example.org'
+}
+];
+
+_.where(users, {
+	name: 'Alex'
+});
+// -> [{name: 'Alex', email: 'alex@example.org'}]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>Size</h3>
+					<pre><code>
+_.size([1, 2]);
+// -> 2
+
+_.size({
+	a: 1,
+	b: 2,
+	c: 3
+});
+// -> 3
+
+_.size('hello');
+// -> 5
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collections</h1>
+					<h3>Pluck</h3>
+					<pre><code>
+var fruits = [
+{
+	name: 'apple',
+	price: 1.99,
+	onSale: true
+},
+{
+	name: 'orange',
+	price: 0.99,
+	onSale: true
+}
+];
+
+_.pluck(fruits, 'name');
+// -> ['apple', 'orange']
+
+_.pluck(fruits, 'prop');
+// -> [undefined, undefined]
+
+var obj = {
+	a: {
+		value: 0
+	},
+	b: {
+		value: 1
+	}
+};
+_.pluck(obj, 'value');
+// -> [0, 1]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>At</h3>
+					<pre><code>
+_.at({
+	a: 1,
+	b: 2,
+	c: 3
+}, ['a', 'c']);
+// -> [1, 3]
+
+_.at('hello', [1, 2]);
+// -> ['e', 'l']
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>includes</h3>
+					<pre><code>
+_.includes(['a', 'b', 'c'], 'a');
+// -> true
+
+_.includes(['a', 'b', 'c'], 'a', 1);
+// -> false
+
+_.includes({
+	a: 1,
+	b: 2,
+	c: 3
+}, 1);
+// -> true
+
+_.includes('hello', 'h');
+// -> true
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Count by</h3>
+					<pre><code>
+_.countBy([1, 2, 3], function(n) {
+	return n > 1;
+});
+// -> {false: 1, true: 2}
+
+_.countBy({
+	a: 1,
+	b: 1,
+	c: 2
+}, function(val) {
+	return val / 2;
+});
+// -> {1: 1, 0.5: 2}
+
+_.countBy('hello', function(char) {
+	return char === 'l';
+});
+// -> {false: 3, true: 2}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Group by </h3>
+					<pre><code>
+_.groupBy([1, 2, 3], function(n) {
+	return n > 1;
+});
+// -> {false: [1], true: [2, 3]}
+
+_.groupBy({
+	a: 1,
+	b: 1,
+	c: 2
+}, function(val) {
+	return val / 2;
+});
+// -> {0.5: [1, 1], 1: [2]}
+
+_.groupBy('hello', function(char) {
+	return char === 'l';
+});
+// -> {fasle: ['h', 'e', o], true: ['l', 'l']}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Invoke</h3>
+					<pre><code>
+_.invoke(['a', 'b', 'c'], 'toUpperCase');
+// -> ['A', 'B', 'C']
+
+_.invoke([['a', 'b'], ['c', 'd']], 'join', '');
+// -> ['ab', 'cd']
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Map</h3>
+					<pre><code>
+_.map([1, 2, 3], function(value) {
+	return value * 2;
+});
+// -> [2, 4, 6]
+
+var users = [
+{
+	name: 'Alex'
+},
+{
+	name: 'Bob'
+}
+];
+
+_.map(users, 'name');
+// -> ['Alex', 'Bob']
+
+_.map(users, 'name', 'Alex'); // Only works in v3
+// -> [true, false]
+
+_.map(users, {name: 'Alex'});
+// -> [true, false]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Reduce</h3>
+					<pre><code>
+_.reduce([1, 2, 3], function(accumulator, value) {
+	return accumulator + value;
+});
+// -> 6
+
+_.reduce([1, 2, 3], function(accumulator, value) {
+	return accumulator + value;
+}, 100);
+// -> 106
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>find</h3>
+					<pre><code>
+var fruits = [
+{
+	name: 'apple',
+	price: 0.99,
+	onSale: true
+},
+{
+	name: 'orange',
+	price: 1.99,
+	onSale: false
+},
+{
+	name: 'passion fruit',
+	price: 4.99,
+	onSale: false
+}
+];
+
+_.find(fruits, function(fruit) {
+	return fruit.price <= 2;
+});
+// -> {name: 'apple', price: 0.99, onSale: true}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Collection</h1>
+					<h3>Sort</h3>
+					<pre><code>
+_.sortBy([3, 2, 1]);
+// -> [1, 2, 3]
+
+_.sortBy([-3, 2, 1], function(val) {
+	return Math.abs(val);
+});
+// -> [1, 2, -3]
+
+var users = [
+{
+	name: 'David',
+	age: 28
+},
+{
+	name: 'Alex',
+	age: 30
+},
+{
+	name: 'Bob',
+	age: 28
+}
+];
+
+_.sortByAll(users, 'name');
+// -> [{name: 'Alex', age: 30}, {name: 'Bob', age: 28}, {name: 'David', age: 28}]
+
+_.sortByAll(users, ['age', 'name'])
+// -> [{name: 'Bob', age: 30, {name: 'David', age: 28}, {name: 'Alex', age: 30}}]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Array</h1>
+					<h3>chunk</h3>
+					<pre><code>
+_.chunk(['a', 'b', 'c', 'd'], 2);
+// → [['a', 'b'], ['c', 'd']]
+
+_.chunk(['a', 'b', 'c', 'd'], 3);
+// → [['a', 'b', 'c'], ['d']]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Array</h1>
+					<h3>concat</h3>
+					<pre><code>
+var array = [1];
+var other = _.concat(array, 2, [3], [[4]]);
+
+console.log(other);
+// → [1, 2, 3, [4]]
+
+console.log(array);
+// → [1]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Array</h1>
+					<h3>difference, differenceBy</h3>
+					<pre><code>
+_.difference([3, 2, 1], [4, 2]);
+// → [3, 1]
+
+_.differenceBy([3.1, 2.2, 1.3], [4.4, 2.5], Math.floor);
+// → [3.1, 1.3]
+
+_.differenceBy([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 1 }], 'x');
+// → [{ 'x': 2 }]
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Array</h1>
+					<h3>head</h3>
+					<pre><code>
+_.head([1, 2, 3]);
+// → 1
+
+_.head([]);
+// → undefined
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Array</h1>
+					<h3>uniq</h3>
+					<pre><code>
+_.uniq([2, 1, 2]);
+// → [2, 1]
+					</code></pre>
+				</section>
+
+
+
+				<section>
+					<h1>Array</h1>
+					<h3>union, unionBy</h3>
+					<pre><code>
+_.union([2, 1], [4, 2], [1, 2]);
+// → [2, 1, 4]
+
+_.unionBy([2.1, 1.2], [4.3, 2.4], Math.floor);
+// → [2.1, 1.2, 4.3]
+
+// The `_.property` iteratee shorthand.
+_.unionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x');
+// → [{ 'x': 1 }, { 'x': 2 }]
+					</code></pre>
+				</section>
+
+
+
+
+				<section>
+					<h1>Math</h1>
+					<h3>floor, ceil</h3>
+					<pre><code>
+_.floor(4.006);
+// → 4
+
+_.floor(0.046, 2);
+// → 0.04
+
+_.floor(4060, -2);
+// → 4000
+
+_.ceil(4.006);
+// → 5
+
+_.ceil(6.004, 2);
+// → 6.01
+
+_.ceil(6040, -2);
+// → 6100
+					</code></pre>
+				</section>
+
+
+
+				<section>
+					<h1>Math</h1>
+					<h3>max, maxBy, min, minBy</h3>
+					<pre><code>
+_.max([4, 2, 8, 6]);
+// → 8
+
+var objects = [{ 'n': 1 }, { 'n': 2 }];
+
+_.maxBy(objects, function(o) { return o.n; });
+// → { 'n': 2 }
+
+_.maxBy(objects, 'n');
+// → { 'n': 2 }
+
+_.min([4, 2, 8, 6]);
+// → 2
+
+var objects = [{ 'n': 1 }, { 'n': 2 }];
+
+_.minBy(objects, function(o) { return o.n; });
+// → { 'n': 1 }
+
+_.minBy(objects, 'n');
+// → { 'n': 1 }
+
+					</code></pre>
+				</section>
+
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>assign</h3>
+					<pre><code>
+function Foo() {
+	this.c = 3;
+}
+
+function Bar() {
+	this.e = 5;
+}
+
+Foo.prototype.d = 4;
+Bar.prototype.f = 6;
+
+_.assign({ 'a': 1 }, new Foo, new Bar);
+// → { 'a': 1, 'c': 3, 'e': 5 }
+					</code></pre>
+				</section>
+
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>at</h3>
+					<pre><code>
+var object = { 'a': [{ 'b': { 'c': 3 } }, 4] };
+
+_.at(object, ['a[0].b.c', 'a[1]']);
+// → [3, 4]
+
+_.at(['a', 'b', 'c'], 0, 2);
+// → ['a', 'c']
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>defaults</h3>
+					<pre><code>
+_.defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+// → { 'user': 'barney', 'age': 36 }
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>has</h3>
+					<pre><code>
+var object = { 'a': { 'b': 2 } };
+var other = _.create({ 'a': _.create({ 'b': 2 }) });
+
+_.has(object, 'a');
+// → true
+
+_.has(object, 'a.b');
+// → true
+
+_.has(object, ['a', 'b']);
+// → true
+
+_.has(other, 'a');
+// → false
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>Merge</h3>
+					<pre><code>
+var users = {
+	'data': [{ 'user': 'barney' }, { 'user': 'fred' }]
+};
+
+var ages = {
+	'data': [{ 'age': 36 }, { 'age': 40 }]
+};
+
+_.merge(users, ages);
+// → { 'data': [{ 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 }] }
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>Object</h1>
+					<h3>keys, values</h3>
+					<pre><code>
+function Foo() {
+	this.a = 1;
+	this.b = 2;
+}
+
+Foo.prototype.c = 3;
+
+_.keys(new Foo);
+// → ['a', 'b'] (iteration order is not guaranteed)
+
+_.keys('hi');
+// → ['0', '1']
+
+function Foo() {
+	this.a = 1;
+	this.b = 2;
+}
+
+Foo.prototype.c = 3;
+
+_.values(new Foo);
+// → [1, 2] (iteration order is not guaranteed)
+
+_.values('hi');
+// → ['h', 'i']
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>Seq</h1>
+					<h3>chain</h3>
+					<pre><code>
+var users = [
+{ 'user': 'barney',  'age': 36 },
+{ 'user': 'fred',    'age': 40 },
+{ 'user': 'pebbles', 'age': 1 }
+];
+
+var youngest = _
+.chain(users)
+.sortBy('age')
+.map(function(o) {
+	return o.user + ' is ' + o.age;
+})
+.head()
+.value();
+// → 'pebbles is 1'
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>String</h1>
+					<h3>capitalize, toLower, toUpper</h3>
+					<pre><code>
+						_.capitalize('FRED');
+						// → 'Fred'
+
+						_.toLower('fooBar');
+						// → 'foobar'
+
+						_.toUpper('fooBar');
+						// → 'FOOBAR'
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>String</h1>
+					<h3>trim, trimEnd, trimStart</h3>
+					<pre><code>
+_.trim('  abc  ');
+// → 'abc'
+
+_.trim('-_-abc-_-', '_-');
+// → 'abc'
+
+_.map(['  foo  ', '  bar  '], _.trim);
+// → ['foo', 'bar']
+
+_.trimEnd('  abc  ');
+// → '  abc'
+
+_.trimEnd('-_-abc-_-', '_-');
+// → '-_-abc'
+
+_.trimStart('  abc  ');
+// → 'abc  '
+
+_.trimStart('-_-abc-_-', '_-');
+// → 'abc-_-'
+					</code></pre>
+				</section>
+
+
+				<section>
+					<h1>String</h1>
+					<h3>escape, unescape</h3>
+					<pre><code>
+_.escape('fred, barney, & pebbles');
+// → 'fred, barney, &amp; pebbles'
+
+_.unescape('fred, barney, &amp; pebbles');
+// → 'fred, barney, & pebbles'
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>String</h1>
+					<h3>replace</h3>
+					<pre><code>
+_.replace('Hi Fred', 'Fred', 'Barney');
+// → 'Hi Barney'
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Lang</h1>
+					<h3>isFunction, isInteger, isObject, isArray</h3>
+					<pre><code>
+
+_.isFunction(_);
+// → true
+
+_.isFunction(/abc/);
+// → false
+
+_.isInteger(3);
+// → true
+
+_.isInteger(Number.MIN_VALUE);
+// → false
+
+_.isInteger(Infinity);
+// → false
+
+_.isInteger('3');
+// → false
+
+_.isObject({});
+// → true
+
+_.isObject([1, 2, 3]);
+// → true
+
+_.isObject(_.noop);
+// → true
+
+_.isObject(null);
+// → false
+
+_.isArray([1, 2, 3]);
+// → true
+
+_.isArray(document.body.children);
+// → false
+
+_.isArray('abc');
+// → false
+
+_.isArray(_.noop);
+// → false
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Linki</h1>
+					<ul>
+						<li> https://lodash.com
+						<li> http://underscorejs.org/
+						<li> http://underscorejs.org/docs/underscore.html
+					</ul>
+
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

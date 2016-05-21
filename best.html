@@ -209,13 +209,13 @@ good
 </code></pre>
 				</section>
 
-				<section>
-					<h1>Kodujemy :)</h1>
-				</section>
-
 
 				<section>
 					<h1>Single Responsibility</h1>
+						<ul>
+							<li>one component per file</li>
+							<li>recommended to be less than 400 lines of code</li>
+						</ul>
 				</section>
 
 				<section>
@@ -524,25 +524,186 @@ function SomeDirective (SomeService) {
 
 
 				<section>
-					<h1>Services</h1>
+					<h1>Service</h1>
+
+					<pre><code>
+function SomeService () {
+
+	function privateMethod() {
+
+	}
+
+	this.publicMethod = function () {
+
+	};
+}
+angular
+.module('app')
+.service('SomeService', SomeService);
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Factory</h1>
+
+					<pre><code>
+bad
+function AnotherService () {
+
+	var someValue = '';
+
+	var someMethod = function () {
+
+	};
+
+	return {
+		someValue: someValue,
+		someMethod: someMethod
+	};
+
+}
+angular
+.module('app')
+.factory('AnotherService', AnotherService);
+
+good
+function AnotherService () {
+
+	var AnotherService = {};
+
+	AnotherService.someValue = '';
+
+	AnotherService.someMethod = function () {
+
+	};
+
+	return AnotherService;
+}
+angular
+.module('app')
+.factory('AnotherService', AnotherService);
+
+
+					</code></pre>
+
+
+
 				</section>
 
 				<section>
 					<h1>Directives</h1>
+<pre><code>
+angular
+.module('app')
+.directive('myExample', myExample);
+
+function myExample() {
+	var directive = {
+		restrict: 'EA',
+		templateUrl: 'app/feature/example.directive.html',
+		scope: {
+			max: '='
+		},
+		link: linkFunc,
+		controller: ExampleController,
+		controllerAs: 'vm',
+		bindToController: true
+	};
+
+	return directive;
+
+	function linkFunc(scope, el, attr, ctrl) {
+
+	}
+}
+
+ExampleController.$inject = ['$scope'];
+function ExampleController($scope) {
+
+}
+</code></pre>
+
+
 				</section>
 
 
 				<section>
 					<h1>Directives</h1>
 					<h6>Usage restriction</h6>
+
+					<pre><code>
+bad
+<!-- directive: my-calendar-range -->
+<div class="my-calendar-range"></div>
+
+good
+<my-calendar-range></my-calendar-range>
+<div my-calendar-range></div>
+
+
+
+					</code></pre>
+
 				</section>
 
 				<section>
 					<h1>Global dependencies</h1>
+
+<pre><code>
+var underscore = angular.module('underscore', []);
+underscore.factory('_', function() {
+	return window._; //Underscore must already be loaded on the page
+});
+</code></pre>
 				</section>
 
 				<section>
-					<h1>Using jQuery</h1>
+					<h1>Angular $ Wrapper Services</h1>
+					<ul>
+						<li> $document
+						<li> $window
+						<li> $timeout
+						<li> $interval
+					</ul>
+
+				</section>
+
+				<section>
+					<h1>Avoid </h1>
+					<ul>
+						<li>using jQuery</li>
+						<li>filters</li>
+						<li>$emit, $broadcast</li>
+						<li>$rootScope</li>
+					</ul>
+				</section>
+
+
+				<section>
+					<h1>View</h1>
+					<pre><code>
+bad
+{{someValue}}
+
+good
+<span ng-bind="someValue"></span>
+
+avoid
+<div ng-init="test1 = ($index | toString)"></div>
+<div ng-bind="$parent.someValue"></div>
+<div ng-bind="$root.someValue"></div>
+
+
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Links</h1>
+					<ul>
+						<li>https://toddmotto.com/opinionated-angular-js-styleguide-for-teams/
+						<li>https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md
+						<li>https://github.com/rwaldron/idiomatic.js
+					</ul>
 				</section>
 
 
