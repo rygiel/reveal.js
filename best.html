@@ -1,0 +1,571 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>AngularJS</h1>
+					<h1>Dobre praktyki</h1>
+				</section>
+
+				<section>
+					<img src="gfx/jshint-dark.png">
+
+					<pre><code>
+// test.js
+function test(param1, param2){
+	console.log(arguments);
+	return param3+1
+}
+jshint ./test.js
+./test.js: line 3, col 3, Missing "use strict" statement.
+./test.js: line 5, col 18, Missing semicolon.
+./test.js: line 5, col 10, 'param3' is not defined.
+./test.js: line 1, col 14, 'test' is defined but never used.
+./test.js: line 1, col 29, 'param2' is defined but never used.
+./test.js: line 1, col 21, 'param1' is defined but never used.
+
+6 errors
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>JSCS</h1>
+<pre>
+<code>
+jscs ./test.js
+disallowUnusedParams: Param `param1` is not used at ./test.js :
+1 |function test(param1, param2){
+-------------------------^
+2 |  console.log(arguments);
+3 |  return param3+1
+
+disallowUnusedParams: Param `param2` is not used at ./test.js :
+1 |function test(param1, param2){
+---------------------------------^
+2 |  console.log(arguments);
+3 |  return param3+1
+
+requireSpaceBeforeBlockStatements: One (or more) spaces required before opening brace for block expressions at ./test.js :
+1 |function test(param1, param2){
+-------------------------------------^
+2 |  console.log(arguments);
+3 |  return param3+1
+
+validateIndentation: Expected indentation of 4 characters at ./test.js :
+1 |function test(param1, param2){
+2 |  console.log(arguments);
+--------^
+3 |  return param3+1
+4 |}
+
+validateIndentation: Expected indentation of 4 characters at ./test.js :
+1 |function test(param1, param2){
+2 |  console.log(arguments);
+3 |  return param3+1
+--------^
+4 |}
+5 |
+
+requireSpaceBeforeBinaryOperators: Operator + should not stick to preceding expression at ./test.js :
+1 |function test(param1, param2){
+2 |  console.log(arguments);
+3 |  return param3+1
+-----------------------^
+4 |}
+5 |
+
+requireSpaceAfterBinaryOperators: Operator + should not stick to following expression at ./test.js :
+1 |function test(param1, param2){
+2 |  console.log(arguments);
+3 |  return param3+1
+-------------------------^
+4 |}
+5 |
+
+requireSemicolons: Missing semicolon after statement at ./test.js :
+1 |function test(param1, param2){
+2 |  console.log(arguments);
+3 |  return param3+1
+--------------------------^
+4 |}
+5 |
+
+8 code style errors found.
+
+</code>
+</pre>
+
+
+				</section>
+
+				<section>
+					<h1>JSCS</h1>
+					<pre><code>
+
+// test.js
+function test(param1, param2){
+	console.log(arguments);
+	return param3+1
+}
+
+jscs ./test.js --fix
+
+function test() {
+	console.log(arguments);
+	return param3 + 1;
+}
+
+					</code></pre>
+				</section>
+
+				<section>
+					<img src="gfx/tool-yo.png"><br>
+
+					<img src="gfx/tool-bower.png">
+
+					<img src="gfx/tool-grunt.png">
+
+<pre><code>
+
+npm install -g yo
+
+</code></pre>
+				</section>
+
+				<section>
+					<h1>angular-seed</h1>
+					<pre><code>
+git clone https://github.com/angular/angular-seed.git
+npm install
+npm start
+npm test
+npm run test-single-run
+npm run update-webdriver
+npm run protractor
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h1>Struktura katalogów</h1>
+<pre><code>
+bad
+|-- app.js
+|-- controllers.js
+|-- filters.js
+|-- services.js
+|-- directives.js
+
+good
+|-- app.js
+|-- controllers/
+|   |-- MainCtrl.js
+|   |-- AnotherCtrl.js
+|-- filters/
+|   |-- MainFilter.js
+|   |-- AnotherFilter.js
+|-- services/
+|   |-- MainService.js
+|   |-- AnotherService.js
+|-- directives/
+    |-- MainDirective.js
+    |-- AnotherDirective.js
+
+good
+|-- app.js
+|-- dashboard/
+|   |-- DashboardService.js
+|   |-- DashboardCtrl.js
+|-- login/
+|   |-- LoginService.js
+|   |-- LoginCtrl.js
+|-- inbox/
+    |-- InboxService.js
+    |-- InboxCtrl.js
+
+
+</code></pre>
+				</section>
+
+				<section>
+					<h1>Kodujemy :)</h1>
+				</section>
+
+
+				<section>
+					<h1>Single Responsibility</h1>
+				</section>
+
+				<section>
+					<h1>Naming Collisions</h1>
+					<pre><code>
+Bad:
+ng*
+$*
+$$*
+
+Good:
+SomeCtrl
+SomeService
+someFilter
+someDirective
+
+Bad:
+function SomeService () {
+
+}
+angular
+.module('app')
+.factory('$$SomeService', SomeService);
+
+Good:
+function SomeService () {
+
+}
+angular
+.module('app')
+.factory('SomeService', SomeService);
+
+Bad:
+function ngFocus (SomeService) {
+
+	return {};
+
+}
+angular
+.module('app')
+.directive('ngFocus', ngFocus);
+
+Good:
+function focusFire (SomeService) {
+
+	return {};
+
+}
+angular
+.module('app')
+.directive('focusFire', focusFire);
+
+
+					</code></pre>
+
+
+
+				</section>
+
+				<section>
+					<h1>Module</h1>
+
+					<pre><code>
+bad:
+var app = angular.module('app', []);
+app.controller();
+app.factory();
+
+good:
+//app.js
+angular.module('app', []);
+
+//controller/controller.js
+angular
+.module('app')
+.controller();
+
+//factory/factory.js
+angular
+.module('app')
+.factory();
+
+					</pre></code>
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+
+					<pre><code>
+bad
+var app = angular.module('app');
+app.controller('MyCtrl', function () {
+
+});
+
+good
+function MainCtrl () {
+
+}
+angular
+.module('app')
+.controller('MainCtrl', MainCtrl);
+
+
+
+				</code></pre>
+
+				</section>
+
+				<section>
+					<h1>Controller Dependencies</h1>
+
+					<pre><code>
+Bad
+angular
+.module('app')
+.controller('DashboardController',
+['$location', '$routeParams', 'common', 'dataservice', Dashboard]);
+
+function Dashboard($location, $routeParams, common, dataservice) {
+}
+
+Good
+angular
+.module('app')
+.controller('DashboardController', DashboardController);
+
+DashboardController.$inject = ['$location', '$routeParams', 'common', 'dataservice'];
+
+function DashboardController($location, $routeParams, common, dataservice) {
+}
+
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>controllerAs</h5>
+<pre><code>
+Bad:
+<div ng-controller="BaseCtrl">
+	{{ name }}
+	<div ng-controller="SectionCtrl">
+		{{ name }}
+		<div ng-controller="FinalCtrl">
+			{{ name }}
+		</div>
+	</div>
+</div>
+
+Good:
+<div ng-controller="BaseCtrl as base">
+	Base scope: {{ base.name }}
+	<div ng-controller="SectionCtrl as section">
+		Section scope: {{ section.name }}
+		Base scope: {{base.name}}
+		<div ng-controller="FinalCtrl as final">
+			{{ final.name }}
+		</div>
+	</div>
+</div>
+</code></pre>
+
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>Avoid controller logic</h5>
+<pre><code>
+Bad:
+function MainCtrl () {
+	this.doSomething = function () {
+
+	};
+}
+angular
+.module('app')
+.controller('MainCtrl', MainCtrl);
+
+Good
+function MainCtrl (SomeService) {
+	this.doSomething = SomeService.doSomething;
+}
+angular
+.module('app')
+.controller('MainCtrl', MainCtrl);
+</code></pre>
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>Resolve promises in router</h5>
+					<pre><code>
+bad
+function MainCtrl (SomeService) {
+
+	var self = this;
+
+	// unresolved
+	self.something;
+
+	// resolved asynchronously
+	SomeService.doSomething().then(function (response) {
+		self.something = response;
+	});
+
+}
+angular
+.module('app')
+.controller('MainCtrl', MainCtrl);
+
+good
+function config ($routeProvider) {
+	$routeProvider
+	.when('/', {
+		templateUrl: 'views/main.html',
+		resolve: {
+			doSomething: function (SomeService) {
+				return SomeService.doSomething();
+			}
+		}
+	});
+}
+angular
+.module('app')
+.config(config);
+
+				</code></pre>
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>Avoid $scope.$watch</h5>
+					<pre><code>
+bad:
+<input ng-model="myModel">
+<script>
+$scope.$watch('myModel', callback);
+</script>
+
+good:
+<input ng-model="myModel" ng-change="callback">
+<script>
+$scope.callback = function () {
+// go
+};
+</script>
+
+</code></pre>
+
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>DOM manipulation</h5>
+
+					<pre><code>
+function MainCtrl () {
+
+	this.makeActive = function (elem) {
+		elem.addClass('test');
+	};
+
+}
+angular
+.module('app')
+.controller('MainCtrl', MainCtrl);
+
+//good
+function SomeDirective (SomeService) {
+	return {
+		restrict: 'EA',
+		controller: 'MainCtrl',
+		template: [
+		'<a href="" class="myawesomebutton" ng-transclude>',
+			'<i class="icon-ok-sign"></i>',
+			'</a>'
+			].join(''),
+			link: function ($scope, $element, $attrs) {
+				// DOM manipulation/events here!
+				$element.on('click', function () {
+					$(this).addClass('test');
+				});
+			}
+		};
+	}
+	angular
+	.module('app')
+	.directive('SomeDirective', SomeDirective);
+
+
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h1>Controller</h1>
+					<h5>Not to reuse the controller for other views</h5>
+				</section>
+
+
+
+				<section>
+					<h1>Services</h1>
+				</section>
+
+				<section>
+					<h1>Directives</h1>
+				</section>
+
+
+				<section>
+					<h1>Directives</h1>
+					<h6>Usage restriction</h6>
+				</section>
+
+				<section>
+					<h1>Global dependencies</h1>
+				</section>
+
+				<section>
+					<h1>Using jQuery</h1>
+				</section>
+
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
