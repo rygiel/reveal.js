@@ -519,6 +519,30 @@ function SomeDirective (SomeService) {
 				<section>
 					<h1>Controller</h1>
 					<h5>Not to reuse the controller for other views</h5>
+
+					<pre><code>
+angular.module('app')
+.controller('BaseCtrl', function ($scope) {
+
+	$scope.commonMethod = function() {
+	};
+
+});
+
+angular.module('app')
+.controller('SomeCtrl', function ($scope, $controller) {
+	$controller('BaseCtrl', {$scope: $scope});
+
+	$scope.someMethod = function() {
+		$scope.commonMethod();
+	};
+	$scope.someMethod();
+
+});
+
+					</code></pre?
+
+
 				</section>
 
 

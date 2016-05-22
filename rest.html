@@ -1,0 +1,634 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>AngularJS</h1>
+					<h1>Zawansowana obsługa</h1>
+					<h1>REST API</h1>
+				</section>
+				<section>
+					<h1>Mockowane</h1>
+					<ul>
+						<li> własny serwis zwracający dane
+						<li> json-server
+						<li> własny serwer
+					</ul>
+				</section>
+
+				<section>
+					<h3>Mockowanie</h3>
+					<h5>Przykładowy serwis</h5>
+					<pre style="width:100%"><code style="font-size:14px">
+angular.module('appApp')
+.service('mockService', ['$q', function ($q) {
+	var mockList = [
+		{id: 1, name: 'Ania'},
+		{id: 2, name: 'Kasia'},
+		{id: 3, name: 'Marysia'}
+	];
+	function getList(){
+		return $q(function(resolve){
+			resolve(mockList);
+		});
+	}
+	function get(id){
+		return $q(function(resolve, reject){
+			var item = _.filter(mockList, function(item){
+				return item.id === id ;
+			});
+			if (item.length === 1){
+				resolve(item[0]);
+			} else {
+				reject({msg:'NOT_FOUND'});
+			}
+		});
+	}
+	function put(id, data){
+		return $q(function(resolve, reject){
+			var index = _.findIndex(mockList, function(item){
+				return item.id === id ;
+			});
+			if (index > -1){
+				mockList[index] = data;
+				resolve();
+			} else {
+				reject({msg:'NOT_FOUND'});
+			}
+		});
+	}
+
+	function post(data){
+		return $q(function(resolve){
+			var max = _.maxBy(mockList, 'id');
+			data['id'] = max.id+1;
+			mockList.push(data);
+			resolve();
+		});
+	}
+	return {
+		getList: getList,
+		get: get,
+		put: put,
+		post: post
+	};
+}]);
+					</code></pre>
+
+
+				</section>
+
+				<section>
+					<h3>Mockowanie</h3>
+
+					<h5>json-server</h5>
+
+					<pre><code>
+// https://www.npmjs.com/package/grunt-json-server
+npm install grunt-json-server --save-dev
+					</code></pre>
+
+
+				</section>
+
+				<section>
+					<h3>Mockowanie</h3>
+					<h5>Konfiguracja json-server</h5>
+					<pre><code>
+grunt.initConfig({
+	json_server: {
+		options: {
+			port: 13337,
+			hostname: '0.0.0.0',
+			db: 'api/db.json'
+		}
+	},
+
+	// Run some tasks in parallel to speed up build process
+	concurrent: {
+		server: {
+			tasks: [
+				'json_server',
+				'watch'
+			],
+			options: {
+				logConcurrentOutput: true
+			}
+		}
+	}
+});
+
+grunt.task.run([
+	'connect:livereload',
+	'concurrent:server'
+]);
+					</code></pre>
+				</section>
+
+				<section>
+					<h3>Mockowanie</h3>
+					<h5>Przykładowy plik z danymi</h5>
+					<pre><code>
+{
+	"posts": [
+		{ "id": 1, "title": "json-server", "author": "typicode" }
+	],
+	"comments": [
+		{ "id": 1, "body": "some comment", "postId": 1 }
+	],
+	"profile": { "name": "typicode" }
+}
+					</code></pre>
+
+				</section>
+
+				<section>
+
+					<h3>Mockowanie</h3>
+					<h5>Własny serwer</h5>
+
+					<pre><code style="font-size:12px">
+var fs = require('fs');
+var url = require('url');
+
+function api(){
+	return function (req, res, next) {
+		if (req.url.indexOf('api') > -1){
+			var db = JSON.parse(fs.readFileSync('api/db.json', 'utf8'));
+			var parsed = url.parse(req.url, true);
+			if (db[parsed.pathname]){
+				res.writeHead(db[parsed.pathname].code);
+				res.write(JSON.stringify(db[parsed.pathname].response));
+				res.end();
+				console.log('api - response 200');
+			} else {
+				res.writeHead(404);
+				res.end();
+				console.log('api - response 404');
+			}
+		} else {
+			next();
+		}
+	};
+}
+
+module.exports = api;
+					</code></pre>
+
+
+
+
+				</section>
+
+				<section>
+					<h3>Mockowanie</h3>
+					<h5>Modyfikujemy Gruntfile.js</h5>
+					<pre><code style="font-size:12px">
+var apiServer = require('./api');
+
+middleware: function (connect) {
+	return [
+		apiServer(),
+		require('connect-modrewrite')(['^/api http://localhost:9000/api [P L]']),
+		connect.static('.tmp'),
+		connect().use(
+		'/bower_components',
+		connect.static('./bower_components')
+		),
+		connect.static(appConfig.app)
+	];
+}
+}
+
+					</code></pre>
+					<h6>Zawansowana wersja</h6>
+					https://github.com/rygiel/todo.git
+				</section>
+
+				<section>
+					<h1>Intecpetor</h1>
+					<p>Pozwala modyfikować obiekty przesyłane między front-endem a serwerem api. Zastosowanie tego rozwiązania ma sens w przypadku potrzeby dodania lub zmodyfikowania danej cechy komunikacji np: poprzez dodawanie do każdego żądania klucza sesji.</p>
+
+
+				</section>
+
+				<section>
+					<h2>Intecpetor</h2>
+					<p>Interceptor definiujemy jako fabrykę która powinna zwracać obiekt z wybraną metodą:</p>
+					<ul>
+						<li>request
+						<li>requestError
+						<li>response
+						<li>responseError
+					</ul>
+				</section>
+
+				<section>
+					<h2>Intecpetor</h2>
+					<pre><code style="font-size:12px">
+$provide.factory('myHttpInterceptor', function($q, dependency1, dependency2) {
+	return {
+		// optional method
+		'request': function(config) {
+			// do something on success
+			return config;
+		},
+
+		// optional method
+		'requestError': function(rejection) {
+			// do something on error
+			if (canRecover(rejection)) {
+				return responseOrNewPromise
+			}
+			return $q.reject(rejection);
+		},
+
+
+
+		// optional method
+		'response': function(response) {
+			// do something on success
+			return response;
+		},
+
+		// optional method
+		'responseError': function(rejection) {
+			// do something on error
+			if (canRecover(rejection)) {
+				return responseOrNewPromise
+			}
+			return $q.reject(rejection);
+		}
+	};
+});
+
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Intecpetor</h2>
+					<h5>Przykład</h5>
+					<pre><code style="font-size:12px">
+module.factory('timestampMarker', [function() {
+	var timestampMarker = {
+		request: function(config) {
+			config.requestTimestamp = new Date().getTime();
+			return config;
+		},
+		response: function(response) {
+			response.config.responseTimestamp = new Date().getTime();
+			return response;
+		}
+	};
+	return timestampMarker;
+}]);
+module.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.interceptors.push('timestampMarker');
+}]);
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>ngResource</h1>
+				</section>
+				<section>
+
+					<h2>ngResource</h2>
+
+					<table>
+						<tr>
+							<td>/api/entries</td>
+							<td>GET</td>
+						</tr>
+						<tr>
+							<td>/api/entries</td>
+							<td>POST</td>
+						</tr>
+						<tr>
+							<td>/api/entries/:id</td>
+							<td>GET</td>
+						</tr>
+						<tr>
+							<td>/api/entries/:id</td>
+							<td>PUT</td>
+						</tr>
+						<tr>
+							<td>/api/entries/:id</td>
+							<td>DELETE</td>
+						</tr>
+					</table>
+
+				</section>
+				<section>
+					<h3>ngResource</h3>
+
+						<pre><code>
+angular.module('myMoudule').factory('Entry', function($resource) {
+	return $resource('/api/entries/:id');
+});
+						</code></pre>
+
+				</section>
+				<section>
+					<h1>Restangular</h1>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+					<ul>
+						<li> obsługa promise
+						<li> prosto tworzy się JSON CRUD
+						<li> pozwala zapominać url'e
+						<li> wsparcie dla wszystkich metod http
+						<li> konfigurowalny / rozszerzalny
+
+					</ul>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Instalacja</h5>
+
+					bower install lodash restangular --save<br>
+
+					https://github.com/mgonto/restangular
+
+
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+					<h5>Szybki start</h5>
+					<pre><code>
+Restangular.all('todo').getList().then(function(todos){
+	console.log(todos.plain());
+});
+
+Restangular.one('todo', 1).get().then(function(todo){
+	console.log(todo.plain());
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+					<h5>Konfiguracja</h5>
+<pre><code>
+.config(function(RestangularProvider){
+	RestangularProvider.setBaseUrl('api');
+	RestangularProvider.setResponseExtractor(function(response, operation) {
+		return response.data;
+	});
+	RestangularProvider.setRequestSuffix('.json');
+	RestangularProvider.setRestangularFields({
+		route: "restangularRoute",
+	});
+});
+
+</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+					<h5>Konfiguracja</h5>
+					<pre><code>
+app.config(function(RestangularProvider) {
+	RestangularProvider.setBaseUrl('/api/v1');
+});
+
+app.factory('ApiV2', function(Restangular) {
+	return Restangular.withConfig(function(RestangularConfigurer) {
+		RestangularConfigurer.setBaseUrl('/api/v2');
+	});
+});
+
+					</code></pre>
+
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Budowanie url</h5>
+
+					<pre><code>
+// /api/accounts/123/buildings/456/spaces/789
+Restangular.one("accounts", 123).one("buildings", 456).one("spaces", 789).get();
+
+var accounts = Restangular.all('accounts');
+
+// /api/accounts
+accounts.getList();
+
+// /api/accounts/1
+accounts.get(1);
+
+
+// /api/accounts/types
+accounts.customGETLIST('types')
+
+// api/accounts/1,2,3,5
+Restangular.several('accounts', 1, 2, 3, 5).getList();
+
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Interceptors</h5>
+					<ul>
+						<li>addResponseInterceptor
+						<li>addRequestInterceptor
+						<li>addFullRequestInterceptor
+						<li>setErrorInterceptor
+					</ul>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Response interceptor</h5>
+					<pre><code>
+RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+
+	data.responseTimestamp = new Date().getTime();
+	return data;
+
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Request interceptor</h5>
+					<pre><code>
+RestangularProvider.addRequestInterceptor(function(element, operation, what, url) {
+
+	if (operation==='post' || operation==='put'){
+		element.requestTimestamp = new Date().getTime();
+	}
+
+	return element;
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+					<h3>Full request interceptor</h3>
+					<ul>
+						<li> headers
+						<li> params
+						<li> element
+						<li> httpConfig
+					</ul>
+					<pre><code>
+RestangularProvider.addFullRequestInterceptor(function(element, operation, what, url) {
+	if (operation==='post' || operation==='put'){
+		element.requestTimestamp = new Date().getTime();
+		return {
+			element: element ,
+			headers: { "super-param": 1234}
+		}
+	}
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Restangular</h2>
+
+					<h5>Error interceptor</h5>
+					<pre><code>
+RestangularProvider.setErrorInterceptor(function(response, deferred, responseHandler) {
+	if(response.status === 404) {
+		console.log('not exist');
+		return false;
+	}
+
+	return true;
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Własne metody</h2>
+					<h5>Element transformer</h5>
+
+					<pre><code>
+RestangularProvider.addElementTransformer('todos', true, function(user) {
+	user.addRestangularMethod('count', 'get', 'count');
+	return user;
+});
+
+var todos = Restangular.all('todos');
+// todos/count
+todos.count().then(function(count){
+	console.log(count);
+});
+
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Własne metody</h2>
+					<h5>Collection</h5>
+
+					<pre><code>
+Restangular.extendCollection('accounts', function(collection) {
+	collection.totalAmount = function() {
+
+	};
+
+	return collection;
+});
+
+var accountsPromise = Restangular.all('accounts').getList();
+
+accountsPromise.then(function(accounts) {
+	accounts.totalAmount();
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Własne metody</h2>
+					<h5>Model</h5>
+
+					<pre><code>
+Restangular.extendModel('accounts', function(model) {
+	model.prettifyAmount = function() {};
+	return model;
+});
+
+var accountPromise = Restangular.one('accounts', 1).get();
+
+accountPromise.then(function(account) {
+	account.prettifyAmount();
+});
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Linki</h1>
+					<ul>
+						<li> https://github.com/mgonto/restangular
+						<li> http://www.ng-newsletter.com/posts/restangular.html
+					</ul>
+				</section>
+				<section>
+					<h1>Alternatywy</h1>
+					<ul>
+						<li> https://breeze.github.io/doc-js/breeze-angular.html
+						<li> https://github.com/platanus/angular-restmod
+					</ul>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
