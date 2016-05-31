@@ -43,6 +43,125 @@
 
 			<div class="slides">
 
+				<section>
+					<img src="gfx/banner.png" /><br />
+					<ul>
+						<li> https://karma-runner.github.io</li>
+					</ul>
+
+
+
+				</section>
+
+				<section>
+					<h1>Karma</h1>
+					<ul>
+						<li> Test on Real Devices</li>
+						<li> Remote Control</li>
+						<li> Testing Framework (Jasmine, Mocha, QUnit)</li>
+						<li> Continuous Integration (Jenkins, Travis or Semaphore)</li>
+					</ul>
+
+					<pre><code>
+npm install karma
+npm install -g karma-cli
+
+karma init
+karma start
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Karma - config</h1>
+
+					<pre><code>
+// Karma configuration
+// http://karma-runner.github.io/0.12/config/configuration-file.html
+// Generated on 2016-04-16 using
+// generator-karma 0.8.3
+
+module.exports = function(config) {
+	'use strict';
+
+	config.set({
+		// enable / disable watching file and executing tests whenever any file changes
+		autoWatch: true,
+
+		// base path, that will be used to resolve files and exclude
+		basePath: '../',
+
+		// testing framework to use (jasmine/mocha/qunit/...)
+		frameworks: ['jasmine'],
+
+		// list of files / patterns to load in the browser
+		files: [
+		'bower_components/angular/angular.js',
+		'bower_components/angular-mocks/angular-mocks.js',
+		'bower_components/angular-animate/angular-animate.js',
+		'bower_components/angular-cookies/angular-cookies.js',
+		'bower_components/angular-messages/angular-messages.js',
+		'bower_components/angular-route/angular-route.js',
+		'bower_components/angular-sanitize/angular-sanitize.js',
+		'app/scripts/**/*.js',
+		'test/mock/**/*.js',
+		'test/spec/**/*.js'
+		],
+
+		// list of files / patterns to exclude
+		exclude: [],
+
+		// web server port
+		port: 8080,
+
+		// Start these browsers, currently available:
+		// - Chrome
+		// - ChromeCanary
+		// - Firefox
+		// - Opera
+		// - Safari (only Mac)
+		// - PhantomJS
+		// - IE (only Windows)
+		browsers: [
+		'PhantomJS'
+		],
+
+		// Which plugins to enable
+		plugins: [
+		'karma-phantomjs-launcher',
+		'karma-jasmine'
+		],
+
+		// Continuous Integration mode
+		// if true, it capture browsers, run tests and exit
+		singleRun: false,
+
+		colors: true,
+
+		// level of logging
+		// possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+		logLevel: config.LOG_INFO,
+
+		// Uncomment the following lines if you are using grunt's server to run the tests
+		// proxies: {
+			//   '/': 'http://localhost:9000/'
+			// },
+			// URL root prevent conflicts with the site root
+			// urlRoot: '_karma_'
+		});
+	};
+					</code></pre>
+
+				</section>
+
+				<section>
+
+					<h1>Karma preprocessors</h1>
+					<ul>
+						<li>coffee</li>
+						<li>coverage</li>
+						<li>ng-html2js</li>
+					</ul>
+				</section>
 
 
         <section>
@@ -136,6 +255,34 @@ describe("Pending specs", function() {
 });
                     </code></pre>
                 </section>
+
+								<section>
+									<h1>Matchers</h1>
+<pre><code>
+expect(value).toBe('abc');
+expect(value).toEqual('abc');
+expect(value).toContain('abc');
+expect(value).toBeTruthy();
+expect(value).toBeFalsy();
+expect(value).toEqual(jasmine.anything());
+</code></pre>
+
+
+								</section>
+
+								<section>
+
+									<h1>Matchers</h1>
+									<ul>
+										<li> jasmine.anything()</li>
+										<li> jasmine.any(Object)</li>
+										<li> jasmine.any(Number)</li>
+										<li> jasmine.any(Function)</li>
+										<li> jasmine.objectContaining({bar: "baz"})</li>
+										<li> jasmine.arrayContaining([3, 1])</li>
+										<li> jasmine.stringMatching(/^bar$/)}</li>
+									</ul>
+								</section>
 
                 <section>
                     <h2>Setup and Teardown</h2>
@@ -260,23 +407,43 @@ describe("Multiple spies, when created manually", function() {
                     </code></pre>
                 </section>
 
-                <section>
 
-                    <h1>Matchers</h1>
-                    <ul>
-                        <li> jasmine.anything()
-                        <li> jasmine.any(Object)
-                        <li> jasmine.any(Number)
-                        <li> jasmine.any(Function)
-                        <li> jasmine.objectContaining({bar: "baz"})
-                        <li> jasmine.arrayContaining([3, 1])
-                        <li> jasmine.stringMatching(/^bar$/)}
-                    </ul>
-                </section>
 
                 <section>
                     <h1>Testing AngualrJS app</h1>
+										<ul>
+											<li>Load the module needed</li>
+											<li>Ask for your dependencies</li>
+											<li>Spy on your dependencies</li>
+											<li>Construct your controller/service/directive</li>
+										</ul>
                 </section>
+
+
+								<section>
+									<h1>Loading Modules</h1>
+									<pre><code>
+describe("Some Testing", function() {
+	beforeEach(module("myApp"));
+});
+									</code></pre>
+
+								</section>
+
+								<section>
+									<h1>Dependency Injection</h1>
+									<pre><code>
+describe('Some Controller', function() {
+	var scope, controller, someService;
+	beforeEach( inject( function($rootScope, $controller, _someService_) {
+		scope = $rootScope.$new();
+		someService = _someService_;
+		controller = $controller('SomeCtrl', {$scope: scope, someService: someService});
+	});
+});
+									</code></pre>
+								</section>
+
 
                 <section>
                     <h4>Controller</h4>
